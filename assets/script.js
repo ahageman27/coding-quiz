@@ -12,25 +12,23 @@ var answerDEl = document.getElementById("answerD");
 var highScoresEl = document.querySelector(".high-scores");
 var scoresListEl = document.getElementById("scores-list");
 
-var user = {
-    right: false,
-    score: 0
-}
+var score = 0;
 
 var questions = ["question1", "question2", "question3", "question4"]
 var question1Answers = ["A", "B", "C", "D"]
-var question2Answers = ["A", "B", "C", "D"]
-var question3Answers = ["A", "B", "C", "D"]
-var question4Answers = ["A", "B", "C", "D"]
+var question2Answers = ["E", "F", "G", "H"]
+var question3Answers = ["I", "J", "K", "L"]
+var question4Answers = ["M", "N", "O", "P"]
+var timeInterval;
 
 var secondsLeft = 100;
 function timer() {
-    var timeinterval = setInterval(function () {
+    timeInterval = setInterval(function () {
         timerEl.textContent = "Time: " + secondsLeft;
         secondsLeft--;
 
         if (secondsLeft <= 0) {
-            clearInterval(timeinterval)
+            clearInterval(timeInterval)
             gameOver()
         }
     }, 1000);
@@ -89,27 +87,31 @@ function writeQuestion() {
         answerDEl.value = false;
     }
 
-    console.log(answerButton)
     for (var i = 0; i < answerButton.length; i++) {
-        answerButton[i].addEventListener("click", updateUser, "event")
+        answerButton[i].addEventListener("click", updateAnswer, "event")
     }
     questions.splice(randomNum, 1)
 }
 
-function updateUser(event) {
+function updateAnswer(event) {
     var selection = event.target;
-    console.log(selection)
-    user.right = selection.value;
-    if (user.right) {
-        user.score++;
-    }
-    else {
+    if (selection.value === "false") {
         secondsLeft -= 10;
     }
-    newQuestion()
-    console.log(user)
+    newQuestion();
 }
 
 function newQuestion() {
+    if (questions.length === 0) {
+        gameOver()
+    }
+    writeQuestion()
+}
 
+function gameOver() {
+    quizEl.style.display = "none"
+    clearInterval(timeInterval);
+    timerEl.textContent = "Time: " + secondsLeft;
+    score = secondsLeft;
+    console.log(score);
 }
