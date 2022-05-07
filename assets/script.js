@@ -9,7 +9,7 @@ var answerAEl = document.getElementById("answerA");
 var answerBEl = document.getElementById("answerB");
 var answerCEl = document.getElementById("answerC");
 var answerDEl = document.getElementById("answerD");
-var highScoresEl = document.querySelector(".high-scores");
+var highScoresEl = document.getElementsByClassName("high-scores");
 var scoresListEl = document.getElementById("scores-list");
 
 var score = 0;
@@ -109,8 +109,11 @@ function newQuestion() {
 }
 
 function gameOver() {
-    quizEl.style.display = "none"
     clearInterval(timeInterval);
+    console.log(typeof highScoresEl);
+    quizEl.style.display = "none";
+    answerButton.style.display = "none";
+    highScoresEl.style.display = "block";
     timerEl.textContent = "Time: " + secondsLeft;
     score = secondsLeft;
     console.log(score);
