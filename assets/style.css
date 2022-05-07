@@ -2,6 +2,10 @@
     display: none;
 }
 
+.game-over {
+    display: none;
+}
+
 .high-scores {
     display: none;
 }

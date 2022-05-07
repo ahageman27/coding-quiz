@@ -4,21 +4,29 @@ var startScreen = document.querySelector(".start-screen");
 var startButton = document.getElementById("start-button");
 var quizEl = document.querySelector(".quiz");
 var questionEl = document.getElementById("question");
-var answerButton = document.getElementsByClassName("answer-button");
+var answerButton = document.querySelectorAll(".answer-button");
 var answerAEl = document.getElementById("answerA");
 var answerBEl = document.getElementById("answerB");
 var answerCEl = document.getElementById("answerC");
 var answerDEl = document.getElementById("answerD");
-var highScoresEl = document.getElementsByClassName("high-scores");
+var gameOverEl = document.querySelector(".game-over");
+var playerScoreEl = document.getElementById("player-score");
+var initialsEl = document.querySelector("#initials");
+var submitButtonEl = document.querySelector("#submit-score");
+var highScoresEl = document.querySelector(".high-scores");
 var scoresListEl = document.getElementById("scores-list");
 
-var score = 0;
+var player = {
+    score: 0,
+    initials: ""
+}
 
 var questions = ["question1", "question2", "question3", "question4"]
 var question1Answers = ["A", "B", "C", "D"]
 var question2Answers = ["E", "F", "G", "H"]
 var question3Answers = ["I", "J", "K", "L"]
 var question4Answers = ["M", "N", "O", "P"]
+
 var timeInterval;
 
 var secondsLeft = 100;
@@ -112,9 +120,12 @@ function gameOver() {
     clearInterval(timeInterval);
     console.log(typeof highScoresEl);
     quizEl.style.display = "none";
-    answerButton.style.display = "none";
-    highScoresEl.style.display = "block";
+    gameOverEl.style.display = "block";
     timerEl.textContent = "Time: " + secondsLeft;
-    score = secondsLeft;
-    console.log(score);
+    player.score = secondsLeft;
+    playerScoreEl.textContent = player.score;
+    submitButtonEl.addEventListener("click", function () {
+        player.initials = initialsEl.value;
+        console.log(player);
+    })
 }
