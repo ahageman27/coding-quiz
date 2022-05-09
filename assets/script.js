@@ -5,10 +5,6 @@ var startButton = document.getElementById("start-button");
 var quizEl = document.querySelector(".quiz");
 var questionEl = document.getElementById("question");
 var answerButtonEl = document.querySelectorAll(".answer-button");
-// var answerAEl = document.getElementById("answerA");
-// var answerBEl = document.getElementById("answerB");
-// var answerCEl = document.getElementById("answerC");
-// var answerDEl = document.getElementById("answerD");
 var gameOverEl = document.querySelector(".game-over");
 var playerScoreEl = document.getElementById("player-score");
 var initialsInputEl = document.querySelector("#initials-input");
@@ -20,7 +16,6 @@ var player = {
     score: 0,
     initials: ""
 }
-
 
 var question1 = {
     title: "css",
@@ -45,13 +40,10 @@ var question4 = {
 }
 
 var questions = [question1, question2, question3, question4];
-// var question1Answers = ["A", "B", "C", "D"]
-// var question2Answers = ["E", "F", "G", "H"]
-// var question3Answers = ["I", "J", "K", "L"]
-// var question4Answers = ["M", "N", "O", "P"]
 
 var timeInterval;
 var randomNum;
+var currentQuestion;
 
 var secondsLeft = 100;
 function timer() {
@@ -66,7 +58,6 @@ function timer() {
     }, 1000);
 }
 
-startButton.addEventListener("click", startQuiz)
 
 function startQuiz() {
     startScreen.style.display = "none";
@@ -74,30 +65,33 @@ function startQuiz() {
     writeQuestion()
 }
 
-// Writes the next question
+// Writes the question
 function writeQuestion() {
     quizEl.style.display = "block";
     randomNum = Math.floor(Math.random() * questions.length);
-    questionEl.textContent = questions[randomNum].title;
+    currentQuestion = questions.splice(randomNum, 1);
+
+    if (questions.lenght !== 0) {
+        questionEl.textContent = currentQuestion[0].title;
+    }
 
     // Creates answer buttons and adds event listener
-    for (var i = 0; i < questions[randomNum].choices.length; i++) {
+    for (var i = 0; i < currentQuestion[0].choices.length; i++) {
         var answerButton = document.createElement("button");
-        answerButton.textContent = questions[randomNum].choices[i];
+        answerButton.textContent = currentQuestion[0].choices[i];
         answerButton.setAttribute("class", "answer-button");
         questionEl.append(answerButton);
-        answerButton.addEventListener("click", updateAnswer)
+        answerButton.addEventListener("click", updateAnswer);
     }
 
     // Removes current question from list
-    questions.splice(randomNum, 1)
+
 }
 
 // Records answer and checks if wrong 
 function updateAnswer(event) {
-    console.log(questions[randomNum])
     var selection = event.target.textContent;
-    if (selection !== questions[randomNum].answer) {
+    if (selection !== currentQuestion[0].answer) {
         secondsLeft -= 10;
     }
     newQuestion();
@@ -114,17 +108,14 @@ function newQuestion() {
 
 function gameOver() {
     clearInterval(timeInterval);
-    quizEl.style.display = "none";
+    questionEl.style.display = "none"
+    for (var i = 0; i < answerButtonEl.length; i++) {
+        answerButtonEl[i].style.display = "none"
+    }
     gameOverEl.style.display = "block";
     timerEl.textContent = "Time: " + secondsLeft;
     player.score = secondsLeft;
     playerScoreEl.textContent = player.score;
-    // initialsInputEl.addEventListener("input", updateInitials);
-    submitButtonEl.addEventListener("click", function () {
-        player.initials = initialsInputEl.value;
-        initialsInputEl.textContent = "";
-        highScores()
-    });
 }
 
 function updateInitials(event) {
@@ -143,3 +134,11 @@ function highScores() {
     scoreCardEl.appendChild(scoreValueEl);
     scoreCardEl.appendChild(initialsEl);
 }
+
+startButton.addEventListener("click", startQuiz)
+
+submitButtonEl.addEventListener("click", function () {
+    player.initials = initialsInputEl.value;
+    initialsInputEl.textContent = "";
+    highScores()
+});
