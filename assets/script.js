@@ -4,14 +4,14 @@ var startScreen = document.querySelector(".start-screen");
 var startButton = document.getElementById("start-button");
 var quizEl = document.querySelector(".quiz");
 var questionEl = document.getElementById("question");
-var answerButton = document.querySelectorAll(".answer-button");
-var answerAEl = document.getElementById("answerA");
-var answerBEl = document.getElementById("answerB");
-var answerCEl = document.getElementById("answerC");
-var answerDEl = document.getElementById("answerD");
+var answerButtonEl = document.querySelectorAll(".answer-button");
+// var answerAEl = document.getElementById("answerA");
+// var answerBEl = document.getElementById("answerB");
+// var answerCEl = document.getElementById("answerC");
+// var answerDEl = document.getElementById("answerD");
 var gameOverEl = document.querySelector(".game-over");
 var playerScoreEl = document.getElementById("player-score");
-var initialsEl = document.querySelector("#initials");
+var initialsInputEl = document.querySelector("#initials-input");
 var submitButtonEl = document.querySelector("#submit-score");
 var highScoresEl = document.querySelector(".high-scores");
 var scoresListEl = document.getElementById("scores-list");
@@ -21,13 +21,37 @@ var player = {
     initials: ""
 }
 
-var questions = ["question1", "question2", "question3", "question4"]
-var question1Answers = ["A", "B", "C", "D"]
-var question2Answers = ["E", "F", "G", "H"]
-var question3Answers = ["I", "J", "K", "L"]
-var question4Answers = ["M", "N", "O", "P"]
+
+var question1 = {
+    title: "css",
+    choices: ["a", "b", "c", "d"],
+    answer: "a"
+}
+
+var question2 = {
+    title: "question 2",
+    choices: ["a", "b", "c", "d"],
+    answer: "a"
+}
+var question3 = {
+    title: "question 3",
+    choices: ["a", "b", "c", "d"],
+    answer: "a"
+}
+var question4 = {
+    title: "question 4",
+    choices: ["a", "b", "c", "d"],
+    answer: "a"
+}
+
+var questions = [question1, question2, question3, question4];
+// var question1Answers = ["A", "B", "C", "D"]
+// var question2Answers = ["E", "F", "G", "H"]
+// var question3Answers = ["I", "J", "K", "L"]
+// var question4Answers = ["M", "N", "O", "P"]
 
 var timeInterval;
+var randomNum;
 
 var secondsLeft = 100;
 function timer() {
@@ -50,65 +74,36 @@ function startQuiz() {
     writeQuestion()
 }
 
+// Writes the next question
 function writeQuestion() {
     quizEl.style.display = "block";
-    var randomNum = Math.floor(Math.random() * questions.length);
-    questionEl.textContent = questions[randomNum];
-    if (randomNum === 0) {
-        answerAEl.textContent = question1Answers[0];
-        answerAEl.value = true;
-        answerBEl.textContent = question1Answers[1];
-        answerBEl.value = false;
-        answerCEl.textContent = question1Answers[2];
-        answerCEl.value = false;
-        answerDEl.textContent = question1Answers[3];
-        answerDEl.value = false;
-    }
-    else if (randomNum === 1) {
-        answerAEl.textContent = question2Answers[0];
-        answerAEl.value = true;
-        answerBEl.textContent = question2Answers[1];
-        answerBEl.value = false;
-        answerCEl.textContent = question2Answers[2];
-        answerCEl.value = false;
-        answerDEl.textContent = question2Answers[3];
-        answerDEl.value = false;
-    }
-    else if (randomNum === 2) {
-        answerAEl.textContent = question3Answers[0];
-        answerAEl.value = true;
-        answerBEl.textContent = question3Answers[1];
-        answerBEl.value = false;
-        answerCEl.textContent = question3Answers[2];
-        answerCEl.value = false;
-        answerDEl.textContent = question3Answers[3];
-        answerDEl.value = false;
-    }
-    else if (randomNum === 3) {
-        answerAEl.textContent = question4Answers[0];
-        answerAEl.value = true;
-        answerBEl.textContent = question4Answers[1];
-        answerBEl.value = false;
-        answerCEl.textContent = question4Answers[2];
-        answerCEl.value = false;
-        answerDEl.textContent = question4Answers[3];
-        answerDEl.value = false;
+    randomNum = Math.floor(Math.random() * questions.length);
+    questionEl.textContent = questions[randomNum].title;
+
+    // Creates answer buttons and adds event listener
+    for (var i = 0; i < questions[randomNum].choices.length; i++) {
+        var answerButton = document.createElement("button");
+        answerButton.textContent = questions[randomNum].choices[i];
+        answerButton.setAttribute("class", "answer-button");
+        questionEl.append(answerButton);
+        answerButton.addEventListener("click", updateAnswer)
     }
 
-    for (var i = 0; i < answerButton.length; i++) {
-        answerButton[i].addEventListener("click", updateAnswer, "event")
-    }
+    // Removes current question from list
     questions.splice(randomNum, 1)
 }
 
+// Records answer and checks if wrong 
 function updateAnswer(event) {
-    var selection = event.target;
-    if (selection.value === "false") {
+    console.log(questions[randomNum])
+    var selection = event.target.textContent;
+    if (selection !== questions[randomNum].answer) {
         secondsLeft -= 10;
     }
     newQuestion();
 }
 
+// Checks if quiz is over 
 function newQuestion() {
     if (questions.length === 0) {
         gameOver()
@@ -116,16 +111,35 @@ function newQuestion() {
     writeQuestion()
 }
 
+
 function gameOver() {
     clearInterval(timeInterval);
-    console.log(typeof highScoresEl);
     quizEl.style.display = "none";
     gameOverEl.style.display = "block";
     timerEl.textContent = "Time: " + secondsLeft;
     player.score = secondsLeft;
     playerScoreEl.textContent = player.score;
+    // initialsInputEl.addEventListener("input", updateInitials);
     submitButtonEl.addEventListener("click", function () {
-        player.initials = initialsEl.value;
-        console.log(player);
-    })
+        player.initials = initialsInputEl.value;
+        initialsInputEl.textContent = "";
+        highScores()
+    });
+}
+
+function updateInitials(event) {
+    player.initials = this.value;
+}
+
+function highScores() {
+    gameOverEl.style.display = "none";
+    highScoresEl.style.display = "inline";
+    var scoreCardEl = document.createElement("li");
+    highScoresEl.appendChild(scoreCardEl);
+    var scoreValueEl = document.createElement("p");
+    scoreValueEl.textContent = player.score;
+    var initialsEl = document.createElement("p");
+    initialsEl.textContent = player.initials;
+    scoreCardEl.appendChild(scoreValueEl);
+    scoreCardEl.appendChild(initialsEl);
 }
