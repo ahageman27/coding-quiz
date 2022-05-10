@@ -11,10 +11,11 @@ var initialsInputEl = document.querySelector("#initials-input");
 var submitButtonEl = document.querySelector("#submit-score");
 var highScoresEl = document.querySelector(".high-scores");
 var scoresListEl = document.getElementById("scores-list");
+var playAgainButton = document.getElementById("play-again");
 
-var numHighScores = 10;
-var highScoresString = localStorage.getItem("high-scores")
-var highScores = JSON.parse(highScoresString) ?? [];
+var highScoresString = localStorage.getItem("high-scores");
+var highScores = [];
+var numHighScores = highScores.length;
 
 var player = {
     score: 0,
@@ -65,16 +66,17 @@ function timer() {
 
 function startQuiz() {
     startScreen.style.display = "none";
+    highScoresEl.style.display = "none";
+    timerEl.style.display = "block";
+    quizEl.style.display = "block";
     timer();
-    writeQuestion()
+    writeQuestion();
 }
 
 // Writes the question
 function writeQuestion() {
-    quizEl.style.display = "block";
     randomNum = Math.floor(Math.random() * questions.length);
     currentQuestion = questions.splice(randomNum, 1);
-    console.log("here")
 
     if (questions.lenght !== 0) {
         questionEl.textContent = currentQuestion[0].title;
@@ -88,9 +90,6 @@ function writeQuestion() {
         questionEl.append(answerButton);
         answerButton.addEventListener("click", updateAnswer);
     }
-
-    // Removes current question from list
-
 }
 
 // Records answer and checks if wrong 
@@ -115,14 +114,16 @@ function newQuestion() {
 
 function gameOver() {
     clearInterval(timeInterval);
-    questionEl.style.display = "none"
+    quizEl.style.display = "none"
     for (var i = 0; i < answerButtonEl.length; i++) {
         answerButtonEl[i].style.display = "none"
     }
     gameOverEl.style.display = "block";
-    timerEl.textContent = "Time: " + secondsLeft;
+    timerEl.textContent = secondsLeft;
     player.score = secondsLeft;
+    secondsLeft = 100;
     playerScoreEl.textContent = player.score;
+    questions = [question1, question2, question3, question4];
 }
 
 function updateInitials(event) {
@@ -130,37 +131,31 @@ function updateInitials(event) {
 }
 
 function writeHighScores() {
-    var highScores = JSON.parse(localStorage.getItem("high-scores") ?? []);
-
+    startScreen.style.display = "none";
+    timerEl.style.display = "none";
+    quizEl.style.display = "none";
     gameOverEl.style.display = "none";
-    highScoresEl.style.display = "inline";
-    highScoresEl.innerHTML = highScores.map((score) =>
-        `<li>$[score.initials] - [score.score]`
+    highScoresEl.style.display = "block";
+    scoresListEl.innerHTML = highScores.map((score) =>
+        `<li>${score.initials} - ${score.score}`
     ).join("");
 
 }
 
-function checkHighScores() {
-    var highScores = JSON.parse(localStorage.getItem("high-scores"));
-    var lowestScore = highScores[numHighScores - 1] ?? 0;
-
-    if (player.score > lowestScore) {
-        saveHighScore(score, highScores);
-        writeHighScores();
-    }
-}
-
-function saveHighScore(score, highScores) {
-    highScores.push(player.score);
+function updateHighScore(score, highScores) {
+    highScores.push(score);
     highScores.sort((a, b) => b.score - a.score);
-    highScores.splice(numHighScores);
-    localStorage.setItem(JSON.stringify("high-scores"));
+    localStorage.setItem("high-scores", JSON.stringify(highScores));
+    writeHighScores();
 }
 
 startButton.addEventListener("click", startQuiz)
+playAgainButton.addEventListener("click", startQuiz)
+scoresButton.addEventListener("click", writeHighScores)
 
 submitButtonEl.addEventListener("click", function () {
     player.initials = initialsInputEl.value;
-    initialsInputEl.textContent = "";
-    writeHighScores()
+    initialsInputEl.value = "";
+    highScores = JSON.parse(localStorage.getItem("high-scores")) ?? [];
+    updateHighScore(player, highScores);
 });
