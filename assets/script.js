@@ -12,6 +12,10 @@ var submitButtonEl = document.querySelector("#submit-score");
 var highScoresEl = document.querySelector(".high-scores");
 var scoresListEl = document.getElementById("scores-list");
 
+var numHighScores = 10;
+var highScoresString = localStorage.getItem("high-scores")
+var highScores = JSON.parse(highScoresString) ?? [];
+
 var player = {
     score: 0,
     initials: ""
@@ -70,6 +74,7 @@ function writeQuestion() {
     quizEl.style.display = "block";
     randomNum = Math.floor(Math.random() * questions.length);
     currentQuestion = questions.splice(randomNum, 1);
+    console.log("here")
 
     if (questions.lenght !== 0) {
         questionEl.textContent = currentQuestion[0].title;
@@ -102,7 +107,9 @@ function newQuestion() {
     if (questions.length === 0) {
         gameOver()
     }
-    writeQuestion()
+    else {
+        writeQuestion()
+    }
 }
 
 
@@ -122,17 +129,32 @@ function updateInitials(event) {
     player.initials = this.value;
 }
 
-function highScores() {
+function writeHighScores() {
+    var highScores = JSON.parse(localStorage.getItem("high-scores") ?? []);
+
     gameOverEl.style.display = "none";
     highScoresEl.style.display = "inline";
-    var scoreCardEl = document.createElement("li");
-    highScoresEl.appendChild(scoreCardEl);
-    var scoreValueEl = document.createElement("p");
-    scoreValueEl.textContent = player.score;
-    var initialsEl = document.createElement("p");
-    initialsEl.textContent = player.initials;
-    scoreCardEl.appendChild(scoreValueEl);
-    scoreCardEl.appendChild(initialsEl);
+    highScoresEl.innerHTML = highScores.map((score) =>
+        `<li>$[score.initials] - [score.score]`
+    ).join("");
+
+}
+
+function checkHighScores() {
+    var highScores = JSON.parse(localStorage.getItem("high-scores"));
+    var lowestScore = highScores[numHighScores - 1] ?? 0;
+
+    if (player.score > lowestScore) {
+        saveHighScore(score, highScores);
+        writeHighScores();
+    }
+}
+
+function saveHighScore(score, highScores) {
+    highScores.push(player.score);
+    highScores.sort((a, b) => b.score - a.score);
+    highScores.splice(numHighScores);
+    localStorage.setItem(JSON.stringify("high-scores"));
 }
 
 startButton.addEventListener("click", startQuiz)
@@ -140,5 +162,5 @@ startButton.addEventListener("click", startQuiz)
 submitButtonEl.addEventListener("click", function () {
     player.initials = initialsInputEl.value;
     initialsInputEl.textContent = "";
-    highScores()
+    writeHighScores()
 });
