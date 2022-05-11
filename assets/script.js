@@ -23,28 +23,83 @@ var player = {
 }
 
 var question1 = {
-    title: "css",
-    choices: ["a", "b", "c", "d"],
-    answer: "a"
+    title: " An HTML document can contain _____",
+    choices: ["Attributes", "Tags", "Raw text", "All of the above"],
+    answer: "All of the above"
 }
 
 var question2 = {
-    title: "question 2",
-    choices: ["a", "b", "c", "d"],
-    answer: "a"
+    title: "A page designed in HTML is called _____",
+    choices: ["Application", "Cover page", "Front-end", "Web Page"],
+    answer: "Web Page"
 }
 var question3 = {
-    title: "question 3",
-    choices: ["a", "b", "c", "d"],
-    answer: "a"
+    title: "The HTML document contains a root tag called ____",
+    choices: ["HEAD", "Title", "Body", "HTML"],
+    answer: "HTML"
 }
 var question4 = {
-    title: "question 4",
-    choices: ["a", "b", "c", "d"],
-    answer: "a"
+    title: "If we want to place text around an image, which CSS property should we use?",
+    choices: ["push", "float", "align", "wrap"],
+    answer: "float"
+}
+var question5 = {
+    title: "Suppose we want to arrange three DIVs so that DIV 3 is placed above DIV1. Now, which CSS property are we going to use to control the stack order?",
+    choices: ["d-index", "s-index", "z-index", "x-index"],
+    answer: "z-index"
+}
+var question6 = {
+    title: "Choose the correct HTML tag for a large title.",
+    choices: ["h1", "header", "head", "h6"],
+    answer: "h1"
+}
+var question7 = {
+    title: " If we want to use a dotted border around an image, which css property are we going to use?",
+    choices: ["border-line", "border-style", "border-decoration", "border-color"],
+    answer: "border-style"
+}
+var question8 = {
+    title: "JavaScript language is _____.",
+    choices: ["Object-oriented", "Object-based", "Functional programming", "All of the above"],
+    answer: "Object-based"
+}
+var question9 = {
+    title: "Which of the following statements is true about the JavaScript?",
+    choices: ["It is a scripting language used to make the website interactive", "It is an advanced version of Java for Desktop and Mobile application development", "It is a markup language of Java to develop the webpages", "All of the above"],
+    answer: "It is a scripting language used to make the website interactive"
+}
+var question10 = {
+    title: "In which HTML element, we put the JavaScript code?",
+    choices: ["<javascript>...</javascript>", "<js>...</js>", "<script>...</script>", "<css>...</css>"],
+    answer: "<script>...</script>"
+}
+var question11 = {
+    title: "Which JavaScript keyword is used to declare a variable?",
+    choices: ["Var", "var", "Let", "All of the above"],
+    answer: "var"
+}
+var question12 = {
+    title: "JavaScript ignores _____.",
+    choices: ["newlines", "tabs", "spaces", "All of the above"],
+    answer: "All of the above"
+}
+var question13 = {
+    title: "Which JavaScript method is used to write on browser's console?",
+    choices: ["console.write()", "console.output()", "console.log()", "console.writeHTML()"],
+    answer: "console.log()"
+}
+var question14 = {
+    title: "JavaScript arrays are written with _____.",
+    choices: ["round brackets ()", "curly brackets {}", 'double quotes ""', "square brackets []"],
+    answer: "undefined"
+}
+var question15 = {
+    title: "Which keyword is used to define a JavaScript function?",
+    choices: ["module", "fun", "func", "function"],
+    answer: "function"
 }
 
-var questions = [question1, question2, question3, question4];
+var questions = [question1, question2, question3, question4, question5, question6, question7, question8, question9, question10, question11, question12, question13, question14, question15];
 
 var timeInterval;
 var randomNum;
@@ -68,7 +123,7 @@ function startQuiz() {
     startScreen.style.display = "none";
     highScoresEl.style.display = "none";
     timerEl.style.display = "block";
-    quizEl.style.display = "block";
+    quizEl.style.display = "flex";
     timer();
     writeQuestion();
 }
@@ -103,7 +158,7 @@ function updateAnswer(event) {
 
 // Checks if quiz is over 
 function newQuestion() {
-    if (questions.length === 0) {
+    if (questions.length === 7) {
         gameOver()
     }
     else {
@@ -123,7 +178,7 @@ function gameOver() {
     player.score = secondsLeft;
     secondsLeft = 100;
     playerScoreEl.textContent = player.score;
-    questions = [question1, question2, question3, question4];
+    questions = [question1, question2, question3, question4, question5, question6, question7, question8, question9, question10, question11, question12, question13, question14, question15];
 }
 
 function updateInitials(event) {
