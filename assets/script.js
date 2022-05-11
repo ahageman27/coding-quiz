@@ -1,3 +1,4 @@
+// get all required elements from HTML
 var scoresButton = document.getElementById("high-score-button");
 var timerEl = document.getElementById("timer");
 var startScreen = document.querySelector(".start-screen");
@@ -13,6 +14,12 @@ var highScoresEl = document.querySelector(".high-scores");
 var scoresListEl = document.getElementById("scores-list");
 var playAgainButton = document.getElementById("play-again");
 
+// initially hide further elements
+quizEl.style.display = "none";
+gameOverEl.style.display = "none";
+highScoresEl.style.display = "none";
+
+// high scores list variables
 var highScoresString = localStorage.getItem("high-scores");
 var highScores = [];
 var numHighScores = highScores.length;
@@ -22,6 +29,7 @@ var player = {
     initials: ""
 }
 
+// question objects including question, choices, and answer
 var question1 = {
     title: " An HTML document can contain _____",
     choices: ["Attributes", "Tags", "Raw text", "All of the above"],
@@ -101,11 +109,13 @@ var question15 = {
 
 var questions = [question1, question2, question3, question4, question5, question6, question7, question8, question9, question10, question11, question12, question13, question14, question15];
 
+// variables that needed to be global
 var timeInterval;
 var randomNum;
 var currentQuestion;
-
 var secondsLeft = 100;
+
+// handles timer countdown
 function timer() {
     timeInterval = setInterval(function () {
         timerEl.textContent = "Time: " + secondsLeft;
@@ -118,8 +128,9 @@ function timer() {
     }, 1000);
 }
 
-
+// starts quiz by hiding start screen, writing question, and starting timer
 function startQuiz() {
+    secondsLeft = 100;
     startScreen.style.display = "none";
     highScoresEl.style.display = "none";
     timerEl.style.display = "block";
@@ -128,26 +139,26 @@ function startQuiz() {
     writeQuestion();
 }
 
-// Writes the question
+// handles displaying a question
 function writeQuestion() {
     randomNum = Math.floor(Math.random() * questions.length);
+    // removes random question from array and saves it to variable
     currentQuestion = questions.splice(randomNum, 1);
 
-    if (questions.lenght !== 0) {
-        questionEl.textContent = currentQuestion[0].title;
-    }
+    // displays question
+    questionEl.textContent = currentQuestion[0].title;
 
     // Creates answer buttons and adds event listener
     for (var i = 0; i < currentQuestion[0].choices.length; i++) {
         var answerButton = document.createElement("button");
         answerButton.textContent = currentQuestion[0].choices[i];
-        answerButton.setAttribute("class", "answer-button");
-        questionEl.append(answerButton);
+        answerButton.setAttribute("class", "answer-button btn btn-warning m-2 text-left");
+        questionEl.appendChild(answerButton);
         answerButton.addEventListener("click", updateAnswer);
     }
 }
 
-// Records answer and checks if wrong 
+// records answer and checks if wrong 
 function updateAnswer(event) {
     var selection = event.target.textContent;
     if (selection !== currentQuestion[0].answer) {
@@ -156,7 +167,7 @@ function updateAnswer(event) {
     newQuestion();
 }
 
-// Checks if quiz is over 
+// checks if quiz is over 
 function newQuestion() {
     if (questions.length === 7) {
         gameOver()
@@ -166,31 +177,30 @@ function newQuestion() {
     }
 }
 
-
+// ends game. stops timer, hides question/answer, records score, resets timer and questions array
 function gameOver() {
     clearInterval(timeInterval);
     quizEl.style.display = "none"
-    for (var i = 0; i < answerButtonEl.length; i++) {
-        answerButtonEl[i].style.display = "none"
-    }
-    gameOverEl.style.display = "block";
-    timerEl.textContent = secondsLeft;
+    gameOverEl.style.display = "flex";
+    timerEl.textContent = "Timer: " + secondsLeft;
     player.score = secondsLeft;
     secondsLeft = 100;
     playerScoreEl.textContent = player.score;
     questions = [question1, question2, question3, question4, question5, question6, question7, question8, question9, question10, question11, question12, question13, question14, question15];
 }
 
+// grabs initials from input
 function updateInitials(event) {
     player.initials = this.value;
 }
 
+// writes/displays high scores list and hides all other elements
 function writeHighScores() {
     startScreen.style.display = "none";
-    timerEl.style.display = "none";
     quizEl.style.display = "none";
     gameOverEl.style.display = "none";
-    highScoresEl.style.display = "block";
+    highScoresEl.style.display = "flex";
+    clearInterval(timeInterval);
     scoresListEl.innerHTML = highScores.map((score) =>
         `<li>${score.initials} - ${score.score}`
     ).join("");
