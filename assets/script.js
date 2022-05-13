@@ -6,6 +6,7 @@ var startButton = document.getElementById("start-button");
 var quizEl = document.querySelector(".quiz");
 var questionEl = document.getElementById("question");
 var answerButtonEl = document.querySelectorAll(".answer-button");
+var validationEl = document.getElementById("validation");
 var gameOverEl = document.querySelector(".game-over");
 var playerScoreEl = document.getElementById("player-score");
 var initialsInputEl = document.querySelector("#initials-input");
@@ -20,7 +21,7 @@ gameOverEl.style.display = "none";
 highScoresEl.style.display = "none";
 
 // high scores list variables
-var highScoresString = localStorage.getItem("high-scores");
+var highScoresArray = JSON.parse(localStorage.getItem("high-scores")) ?? [];
 var highScores = [];
 var numHighScores = highScores.length;
 
@@ -135,6 +136,7 @@ function startQuiz() {
     highScoresEl.style.display = "none";
     timerEl.style.display = "block";
     quizEl.style.display = "flex";
+    validationEl.textContent = "";
     timer();
     writeQuestion();
 }
@@ -163,6 +165,10 @@ function updateAnswer(event) {
     var selection = event.target.textContent;
     if (selection !== currentQuestion[0].answer) {
         secondsLeft -= 10;
+        validationEl.textContent = "Wrong!"
+    }
+    else {
+        validationEl.textContent = "Correct!"
     }
     newQuestion();
 }
@@ -201,26 +207,40 @@ function writeHighScores() {
     gameOverEl.style.display = "none";
     highScoresEl.style.display = "flex";
     clearInterval(timeInterval);
-    scoresListEl.innerHTML = highScores.map((score) =>
-        `<li>${score.initials} - ${score.score}`
-    ).join("");
-
+    scoresListEl.innerHTML = "";
+    highScoresArray = JSON.parse(localStorage.getItem("high-scores")) ?? [];
+    for (var i = 0; i < highScoresArray.length; i++) {
+        var highScore = document.createElement("li");
+        highScore.textContent = highScoresArray[i].initials + " - " + highScoresArray[i].score;
+        scoresListEl.appendChild(highScore);
+    }
 }
 
+// adds new score and sorts scores
 function updateHighScore(score, highScores) {
     highScores.push(score);
     highScores.sort((a, b) => b.score - a.score);
     localStorage.setItem("high-scores", JSON.stringify(highScores));
-    writeHighScores();
 }
 
 startButton.addEventListener("click", startQuiz)
-playAgainButton.addEventListener("click", startQuiz)
-scoresButton.addEventListener("click", writeHighScores)
+
+playAgainButton.addEventListener("click", function () {
+    questions = [question1, question2, question3, question4, question5, question6, question7, question8, question9, question10, question11, question12, question13, question14, question15];
+    startQuiz();
+})
+
+scoresButton.addEventListener("click", writeHighScores);
 
 submitButtonEl.addEventListener("click", function () {
-    player.initials = initialsInputEl.value;
-    initialsInputEl.value = "";
-    highScores = JSON.parse(localStorage.getItem("high-scores")) ?? [];
-    updateHighScore(player, highScores);
+    if (initialsInputEl.value === "") {
+        alert("Please enter your name")
+    } else {
+        console.log("here")
+        player.initials = initialsInputEl.value;
+        initialsInputEl.value = "";
+        highScores = JSON.parse(localStorage.getItem("high-scores")) ?? [];
+        updateHighScore(player, highScores);
+        writeHighScores();
+    }
 });

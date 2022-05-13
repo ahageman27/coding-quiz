@@ -13,7 +13,7 @@
 <body>
     <header class="container-fluid bg-dark text-light">
         <div class="d-flex align-items-center justify-content-between p-3">
-            <button id="high-score-button">View High Scores</button>
+            <button id="high-score-button" class="btn btn-warning">View High Scores</button>
             <p id="timer"></p>
         </div>
     </header>
@@ -22,26 +22,28 @@
             <h1>Welcome to the Coding Quiz!</h1>
             <p>Answer the following code related questions within the time limit.</p>
             <p>Keep in mind that wrong answers will reduce your time!</p>
-            <button id="start-button">Start Quiz</button>
+            <button id="start-button" class="btn btn-warning">Start Quiz</button>
         </div>
     </section>
-    <div class="quiz container vh-100 justify-content-center align-items-center">
+    <div class="quiz container vh-100 flex-column justify-content-center align-items-center">
+        <p id="validation" class="m-3"></p>
         <section class="card d-flex flex-column justify-content-start bg-dark text-light m-3">
-            <div id="question" class="card-title d-flex flex-column justify-content-start"></div>
+            <div id="question" class="card-title d-flex flex-column justify-content-start m-3"></div>
+
         </section>
     </div>
-    <section class="game-over">
+    <section class="game-over container flex-column align-items-center justify-content-center">
         <h2>Score:</h2>
-        <p id="player-score"></p>
+        <h2 id="player-score"></h2>
         <label for="initials-input">Please Enter your Name</label>
-        <input id="initials-input" type="text">
-        <button id="submit-score">Submit Score</button>
+        <input class="m-3" id="initials-input" type="text">
+        <button class="btn btn-warning" id="submit-score">Submit Score</button>
     </section>
-    <section class="high-scores">
-        <h2>HighScores</h2>
-        <ol id="scores-list">
+    <section class="high-scores flex-column align-items-center justify-content-center">
+        <h2 class="m-3">HighScores</h2>
+        <ol id="scores-list" class="m-3">
         </ol>
-        <button id="play-again">Play Again?</button>
+        <button class="btn btn-warning m-3" id="play-again">Play Again?</button>
     </section>
     <script src="./assets/script.js"></script>
 </body>
