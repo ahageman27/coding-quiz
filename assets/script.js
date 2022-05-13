@@ -236,7 +236,6 @@ submitButtonEl.addEventListener("click", function () {
     if (initialsInputEl.value === "") {
         alert("Please enter your name")
     } else {
-        console.log("here")
         player.initials = initialsInputEl.value;
         initialsInputEl.value = "";
         highScores = JSON.parse(localStorage.getItem("high-scores")) ?? [];
